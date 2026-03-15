@@ -1,0 +1,32 @@
+monitoramento:
+  - nm_tabela: "workspace.default.fato_empresas"
+    colunas_particao: ["anomes"] 
+    particao_referencia: "MAX"
+    regras:
+      - tipo: "check_count"
+        parametros: { min_esperado: 500 }
+      - tipo: "check_datatype"
+        parametros: { col_name: "vl_capital_social", tipo_esperado: "decimal" }
+      - tipo: "check_custom_sql"
+        parametros:
+          # Exemplo validando apenas a partição atual (anomes mais recente)
+          query: |
+            SELECT SUM(vl_capital_social) 
+            FROM workspace.default.fato_empresas 
+          condicao_esperada: "lambda x: x > 10000"
+
+  - nm_tabela: "workspace.default.fato_arrecadacao_ir_ipi"
+    colunas_particao: ["nu_ano", "nu_mes"] 
+    particao_referencia: "MAX"
+    regras:
+      - tipo: "check_count"
+        parametros: { min_esperado: 500 }
+
+  - nm_tabela: "workspace.default.dim_cnae"
+    colunas_particao: [] 
+    particao_referencia: null
+    regras:
+      - tipo: "check_count"
+        parametros: { min_esperado: 500 }
+      - tipo: "check_unique"
+        parametros: { col_name: "cd_cnae" }
