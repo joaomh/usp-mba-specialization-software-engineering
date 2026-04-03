@@ -1,32 +1,148 @@
 monitoramento:
-  - nm_tabela: "workspace.default.fato_empresas"
-    colunas_particao: ["anomes"] 
-    particao_referencia: "MAX"
-    regras:
-      - tipo: "check_count"
-        parametros: { min_esperado: 500 }
-      - tipo: "check_datatype"
-        parametros: { col_name: "vl_capital_social", tipo_esperado: "decimal" }
-      - tipo: "check_custom_sql"
-        parametros:
-          # Exemplo validando apenas a partição atual (anomes mais recente)
-          query: |
-            SELECT SUM(vl_capital_social) 
-            FROM workspace.default.fato_empresas 
-          condicao_esperada: "lambda x: x > 10000"
-
-  - nm_tabela: "workspace.default.fato_arrecadacao_ir_ipi"
-    colunas_particao: ["nu_ano", "nu_mes"] 
-    particao_referencia: "MAX"
-    regras:
-      - tipo: "check_count"
-        parametros: { min_esperado: 500 }
-
-  - nm_tabela: "workspace.default.dim_cnae"
+  - nm_tab: "dim_cnae"
     colunas_particao: [] 
     particao_referencia: null
     regras:
       - tipo: "check_count"
-        parametros: { min_esperado: 500 }
+        parametros: { min_esperado: 1300 }
       - tipo: "check_unique"
         parametros: { col_name: "cd_cnae" }
+      - tipo: "check_completeness"
+        parametros: { col_name: "ds_cnae" }
+
+  - nm_tab: "dim_motivo_situacao_cadastral"
+    colunas_particao: [] 
+    particao_referencia: null
+    regras:
+      - tipo: "check_count"
+        parametros: { min_esperado: 50 }
+      - tipo: "check_unique"
+        parametros: { col_name: "cod_motivo_situacao" }
+      - tipo: "check_completeness"
+        parametros: { col_name: "desc_motivo_situacao" }
+
+  - nm_tab: "dim_municipio"
+    colunas_particao: [] 
+    particao_referencia: null
+    regras:
+      - tipo: "check_count"
+        parametros: { min_esperado: 5500 }
+      - tipo: "check_unique"
+        parametros: { col_name: "cod_municipio" }
+      - tipo: "check_completeness"
+        parametros: { col_name: "nome_municipio" }
+
+  - nm_tab: "dim_natureza_juridica"
+    colunas_particao: [] 
+    particao_referencia: null
+    regras:
+      - tipo: "check_count"
+        parametros: { min_esperado: 90 }
+      - tipo: "check_unique"
+        parametros: { col_name: "cod_natureza_juridica" }
+      - tipo: "check_completeness"
+        parametros: { col_name: "nome_natureza_juridica" }
+
+  - nm_tab: "dim_pais"
+    colunas_particao: [] 
+    particao_referencia: null
+    regras:
+      - tipo: "check_count"
+        parametros: { min_esperado: 250 }
+      - tipo: "check_unique"
+        parametros: { col_name: "cod_pais" }
+      - tipo: "check_completeness"
+        parametros: { col_name: "nome_pais" }
+
+  - nm_tab: "dim_qualificacao_socio"
+    colunas_particao: [] 
+    particao_referencia: null
+    regras:
+      - tipo: "check_count"
+        parametros: { min_esperado: 50 }
+      - tipo: "check_unique"
+        parametros: { col_name: "cod_qualificacao_socio" }
+      - tipo: "check_completeness"
+        parametros: { col_name: "nome_qualificacao_socio" }
+
+  - nm_tab: "fato_arrecadacao_ir_ipi"
+    colunas_particao: ["nu_ano", "nu_mes"] 
+    particao_referencia: MAX
+    regras:
+      - tipo: "check_count"
+        parametros: { min_esperado: 5 }
+      - tipo: "check_datatype"
+        parametros: { col_name: "nu_ano", tipo_esperado: "int" }
+      - tipo: "check_datatype"
+        parametros: { col_name: "vl_arrecadacao_liquida", tipo_esperado: "decimal(18,2)" }
+      - tipo: "check_completeness"
+        parametros: { col_name: "vl_restituicao" }
+
+
+  - nm_tab: "fato_arrecadacao_uf"
+    colunas_particao: ["nu_ano", "nu_mes"] 
+    particao_referencia: MAX
+    regras:
+      - tipo: "check_count"
+        parametros: { min_esperado: 1200 }
+      - tipo: "check_datatype"
+        parametros: { col_name: "nu_ano", tipo_esperado: "int" }
+      - tipo: "check_datatype"
+        parametros: { col_name: "vl_imposto_importacao", tipo_esperado: "decimal(18,2)" }
+      - tipo: "check_completeness"
+        parametros: { col_name: "vl_receita_previdenciaria_total" }
+
+  - nm_tab: "fato_empresas"
+    colunas_particao: ["anomes"] 
+    particao_referencia: MAX
+    regras:
+      - tipo: "check_count"
+        parametros: { min_esperado: 50000000 }
+      - tipo: "check_unique"
+        parametros: { col_name: "cd_cnpj_basico"}
+      - tipo: "check_unique"
+        parametros: { col_name: "nm_razao_social"}
+      - tipo: "check_datatype"
+        parametros: { col_name: "cd_natureza_juridica", tipo_esperado: "int" }
+      - tipo: "check_completeness"
+        parametros: { col_name: "vl_capital_social" }
+        parametros:
+          query: |
+            SELECT SUM(vl_capital_social) 
+            FROM workspace.default.fato_empresas 
+          condicao_esperada: "lambda x: x > 1000000"
+
+  - nm_tab: "fato_estabelecimentos"
+    colunas_particao: ["anomes"] 
+    particao_referencia: MAX
+    regras:
+      - tipo: "check_count"
+        parametros: { min_esperado: 50000000 }
+      - tipo: "check_unique"
+        parametros: { col_name: "cd_cnpj_basico"}
+      - tipo: "check_completeness"
+        parametros: { col_name: "nm_fantasia" }
+
+  - nm_tab: "fato_socios"
+    colunas_particao: ["anomes"] 
+    particao_referencia: MAX
+    regras:
+      - tipo: "check_count"
+        parametros: { min_esperado: 20000000 }
+      - tipo: "check_unique"
+        parametros: { col_name: "cd_cnpj_basico"}
+      - tipo: "check_datatype"
+        parametros: { col_name: "cd_qualificacao_socio", tipo_esperado: "int" }
+      - tipo: "check_completeness"
+        parametros: { col_name: "cd_cnpj_basico" }
+
+  - nm_tab: "fato_leitos_hospitalares"
+    colunas_particao: [] 
+    particao_referencia: null
+    regras:
+      - tipo: "check_count"
+        parametros: { min_esperado: 5000 }
+      - tipo: "check_datatype"
+        parametros: { col_name: "LEITOS_SUS", tipo_esperado: "int" }
+      - tipo: "check_completeness"
+        parametros: { col_name: "REGIAO" }

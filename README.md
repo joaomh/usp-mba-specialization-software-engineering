@@ -1,8 +1,8 @@
 # Framework de Qualidade de Dados
 
-Este repositório contém a implementação prática do Trabalho de Conclusão de Curso (TCC) do MBA em Engenharia de Software/Dados. O projeto consiste em uma abordagem genérica para avaliação e garantia de qualidade de dados (Data Quality) em arquiteturas de Big Data.
+Este repositório contém a implementação prática do Trabalho de Conclusão de Curso (TCC) do MBA em Engenharia de Software. O projeto consiste em uma abordagem genérica para avaliação e garantia de qualidade de dados (Data Quality) em arquiteturas de Big Data.
 
-O estudo de caso utiliza dados públicos do **CNPJ (Receita Federal)** para demonstrar ingestão, tratamento e validação automatizada.
+O estudo de caso utiliza dados públicos do Governo Federal para demonstrar ingestão, tratamento e validação automatizada.
 
 ## Estrutura do Repositório
 
