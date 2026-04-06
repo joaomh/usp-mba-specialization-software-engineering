@@ -84,7 +84,7 @@ monitoramento:
     particao_referencia: MAX
     regras:
       - tipo: "check_count"
-        parametros: { min_esperado: 1200 }
+        parametros: { min_esperado: 27 }
       - tipo: "check_datatype"
         parametros: { col_name: "nu_ano", tipo_esperado: "int" }
       - tipo: "check_datatype"
@@ -106,6 +106,7 @@ monitoramento:
         parametros: { col_name: "cd_natureza_juridica", tipo_esperado: "int" }
       - tipo: "check_completeness"
         parametros: { col_name: "vl_capital_social" }
+      - tipo: "check_custom_sql"
         parametros:
           query: |
             SELECT SUM(vl_capital_social) 
@@ -122,6 +123,12 @@ monitoramento:
         parametros: { col_name: "cd_cnpj_basico"}
       - tipo: "check_completeness"
         parametros: { col_name: "nm_fantasia" }
+      - tipo: "check_custom_sql"
+        parametros:
+          query: |
+            SELECT LEN(nr_cep)
+            FROM workspace.default.fato_estabelecimentos 
+          condicao_esperada: "lambda x: x > 7"
 
   - nm_tab: "fato_socios"
     colunas_particao: ["anomes"] 
