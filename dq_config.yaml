@@ -77,6 +77,12 @@ monitoramento:
         parametros: { col_name: "vl_arrecadacao_liquida", tipo_esperado: "decimal(18,2)" }
       - tipo: "check_completeness"
         parametros: { col_name: "vl_restituicao" }
+      - tipo: "check_custom_sql"
+        parametros:
+          query: |
+            SELECT SUM(vl_arrecadacao_bruta) 
+            FROM workspace.default.fato_arrecadacao_ir_ipi
+          condicao_esperada: "lambda x: x > 1000000"
 
 
   - nm_tab: "fato_arrecadacao_uf"
